@@ -17,7 +17,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-const database = getFirestore(app);
+export const database = getFirestore(app);
 export const userRef = collection(database,'users');
 
 async function register({ firstName , lastName , email , password }) {
