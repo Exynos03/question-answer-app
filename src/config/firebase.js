@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth ,createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc , getDocs } from 'firebase/firestore';
+import { getFirestore, collection , addDoc } from 'firebase/firestore';
 
 
 
@@ -16,30 +16,27 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 const database = getFirestore(app);
-
-
+export const userRef = collection(database,'users');
 
 async function register({ firstName , lastName , email , password }) {
     try{
         const { user } = await createUserWithEmailAndPassword(auth, email, password);
         if (!user) return;
-        const userRef = doc(database,'users');
-        const snapshot = await getDocs();
-        if(!snapshot.exists){
-            const createdAt = new Date();
-            try{
-                await userRef.set({
-                    firstName,
-                    lastName,
-                    email,
-                    createdAt
-                })
-            }catch(error){
-                console.log(error);
-            }
+        
+        try {
+            await addDoc(userRef, {
+                firstName,
+                lastName,
+                email
+            });
+        }catch(error){
+            console.log(error);
         }
+
+        
+        
 
     }catch(error){
         console.log(error);
@@ -47,16 +44,8 @@ async function register({ firstName , lastName , email , password }) {
 
 }
 
-async function login({ email , password }) {
-    
-}
 
-async function logout() {
-    
-}
 
 export const firebaseFuntions = {
-    register,
-    login,
-    logout 
+    register
 }
